@@ -1,0 +1,40 @@
+{
+  "name": "multisolar-voice",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Multi Solar Voice: AI calling agent (inbound + outbound), the team's Voice Console and the Voice Agent server. Separate from the website.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace @msv/console",
+    "build": "npm run build --workspace @msv/console",
+    "start": "npm run start --workspace @msv/console",
+    "fast": "npm run build && npm run start",
+    "setup": "node scripts/setup.mjs",
+    "db:migrate": "npm run db:migrate --workspace @msv/console",
+    "db:deploy": "npm run db:deploy --workspace @msv/console",
+    "db:seed": "npm run db:seed --workspace @msv/console",
+    "db:studio": "npm run db:studio --workspace @msv/console",
+    "test": "vitest run",
+    "typecheck": "tsc -p packages/core --noEmit && tsc -p packages/data --noEmit && tsc -p apps/voice --noEmit && npm run typecheck --workspace @msv/console",
+    "lint": "npm run lint --workspace @msv/console",
+    "voice": "npm run dev --workspace @msv/voice",
+    "voice:start": "npm run start --workspace @msv/voice",
+    "voice:env": "node scripts/voice-env.mjs",
+    "sim:day": "npm run sim:day --workspace @msv/voice",
+    "mfa:reset": "npm run mfa:reset --workspace @msv/console --"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^5.0.3",
+    "@types/node": "^22.20.5"
+  },
+  "overrides": {
+    "postcss": "^8.5.23"
+  }
+}

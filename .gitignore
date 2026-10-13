@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# secrets: never commit
+.env
+.env.*
+!.env.example
+.db-password.local
+
+# local uploads and recordings
+apps/console/storage/
+
+.DS_Store
+Thumbs.db

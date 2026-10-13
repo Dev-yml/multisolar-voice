@@ -1,0 +1,406 @@
+{
+ "source": "multisolar.in content as published in the website project (src/data)",
+ "exportedAt": "2026-10-07",
+ "docs": [
+  {
+   "title": "About Multi Solar",
+   "category": "company",
+   "url": "http://localhost:3000/about",
+   "sections": [
+    {
+     "heading": "Who we are",
+     "text": "Multi Solar is a solar panel company in India that designs and manufactures high-efficiency solar panels for homes, businesses, factories and institutions. As a venture of Multi Infrastructure & Engineering Pvt. Ltd., we combine in-house module manufacturing, strong research and development, and full EPC capability under one roof.\n\nFrom our manufacturing facility at Central Electronics Limited in Sahibabad, we run a fully automated line with 100 percent EL and flash testing, so every panel that ships is built to last decades, not marketing cycles."
+    },
+    {
+     "heading": "Our story",
+     "text": "Multi Solar is the newest venture of Multi Infrastructure & Engineering Pvt. Ltd., established with one clear aim: to accelerate India’s move to clean, reliable and affordable energy. We are rooted in strong manufacturing expertise, robust research and development, and deep EPC experience, and we specialise in the design and assembly of high-quality solar modules that meet strict BIS and IEC standards.\n\nOur solutions serve residential, commercial and public-sector projects across India. With a firm commitment to sustainability, quality and performance, we aim to power a greener future while delivering long-term value to every customer."
+    },
+    {
+     "heading": "Vision and mission",
+     "text": "Vision: To build a carbon-neutral India where clean, renewable energy becomes the foundation of economic growth, energy independence and social equity.\n\nMission: To deliver high-quality, innovative and cost-effective solar solutions through advanced technology, strong manufacturing and strategic partnerships, empowering homes, businesses and institutions across India with reliable clean energy."
+    },
+    {
+     "heading": "Parent company",
+     "text": "Multi Solar is a venture of Multi Infrastructure & Engineering Pvt. Ltd.."
+    },
+    {
+     "heading": "Strategic partnership with Central Electronics Limited (CEL)",
+     "text": "To bring world-class technology from day one, Multi Solar entered a long-term technology and supply partnership with Central Electronics Limited (CEL), India’s pioneering public-sector enterprise in photovoltaics.\n\nCell & Technology Supply: High-efficiency cells and R&D expertise that power our Mono PERC, TOPCon and upcoming HJT product lines.\n\nQuality Assurance: Joint QA protocols so every Multi Solar module meets or exceeds ALMM, BIS and MNRE specifications.\n\nInnovation Pipeline: Collaborative research on bifacial modules, building-integrated PV and battery-storage hybrids."
+    },
+    {
+     "heading": "Why Multi Solar",
+     "text": "We build solar systems meant to last decades, not marketing cycles.\n• Certified solar PV module manufacturing\n• Strong focus on real-world performance\n• Transparent pricing and documentation\n• Scalable solutions for homes and enterprises\n• Commitment to India’s renewable energy mission"
+    },
+    {
+     "heading": "Why choose Multi Solar",
+     "text": "Advanced Manufacturing: BIS-certified modules from an automated line with plus or minus 0.3 mm precision.\nQuality Assurance: Long-term performance warranty and 100 percent EL and flash testing.\nManufacturer-led EPC: Because we make the modules and execute the EPC, accountability stays in one place — no finger-pointing between supplier and installer.\nCEL Technology & Supply Partnership: A long-term tie-up with Central Electronics Limited, India’s pioneering public-sector photovoltaics enterprise.\nPAN India Delivery: From metro cities to remote sites.\nExpert Support: From first consultation to commissioning and after-sales service."
+    },
+    {
+     "heading": "Project experience",
+     "text": "100+ installations across India. Solar EPC base in Gurugram, serving Delhi NCR — with PAN India delivery from metro cities to remote sites."
+    }
+   ]
+  },
+  {
+   "title": "Manufacturing, quality and certifications",
+   "category": "manufacturing",
+   "url": "http://localhost:3000/about#manufacturing",
+   "sections": [
+    {
+     "heading": "Made-in-India manufacturing edge",
+     "text": "200 MW — Annual module capacity: With planned expansion to 500 MW.\n±0.3 mm — Fully automated line: Stringer, auto lay-up and auto bussing, delivering plus or minus 0.3 mm precision.\n100% — EL and flash testing: Every module tested, for zero micro-crack shipments.\nLean & Green — Operations: A share of shop-floor energy is sourced from our own rooftop array."
+    },
+    {
+     "heading": "How a module is made (manufacturing steps)",
+     "text": "1. Stringing: Solar cells are connected into strings on the automated stringer.\n2. Lay-up: Auto lay-up places the strings into the module layout with plus or minus 0.3 mm precision.\n3. Bussing: Auto bussing joins the strings into the module’s circuit on the same automated line.\n4. Testing: Every single module goes through EL (electroluminescence) and flash testing — 100 percent, for zero micro-crack shipments.\n5. Finished module: ALMM, BIS and IEC certified modules leave Sahibabad for homes, businesses and industry across India."
+    },
+    {
+     "heading": "Built for Indian conditions",
+     "text": "Our modules are BIS, IEC and ALMM certified and built to perform in real Indian conditions of heat, haze and humidity.\nIndia’s rooftops face dust, heat, monsoon humidity and long summers. Choosing the right system is more than a roof-size calculation: we study load patterns, grid conditions and future needs before recommending one.\nHeat: Low-light and high-temperature performance for more units in early mornings, late evenings and hot afternoons.\nHaze: Strong low-light response keeps generation up on hazy and overcast days.\nHumidity: PID-resistant glass and EVA for stable output in humid and coastal climates.\nLoad: Mechanical load rating of 5400 Pa snow and 2400 Pa wind on Mono PERC modules."
+    }
+   ]
+  },
+  {
+   "title": "Leadership team",
+   "category": "company",
+   "url": "http://localhost:3000/about",
+   "sections": [
+    {
+     "heading": "Leadership & team",
+     "text": "Multi Solar is led by an experienced team committed to building solar systems that last decades.\nAnuj Kumar Kajla — Managing Director. Over two decades of experience in project management and business development. Drives Multi Infra’s vision for innovative, sustainable infrastructure.\nAshok Kumar Chaudhary — Promoter & Director. A focused and execution-driven leader who specialises in strategic planning, operations management, and building scalable, future-ready businesses with strong partner alignment and an ownership-driven culture.\nArchana Kajla — Director. Key contributor to Multi Infra’s success and operational efficiency. Ensures seamless execution of the company’s projects.\nSonu Devi — Director. Focused on strengthening Multi Infra’s core values and sustainable growth. Enhances community impact through innovative infrastructure solutions.\nDr. Ashok Kumar Saini — Chief Executive Officer. Ph.D. in Mechanical Engineering with 30+ years’ experience across renewable energy, power, solar, water, building construction and mining. Has held leadership positions with ETA, A2Z Group, Jaguar Overseas and Dynamic Mining (Dubai).\nJagatvir Singh — Director. 22+ years in transmission and electrical engineering projects. Previously with Vindhya Telelinks, KEPCO, Kalpataru Power Transmission and ABB."
+    }
+   ]
+  },
+  {
+   "title": "Mono PERC Solar Panels",
+   "category": "product",
+   "url": "http://localhost:3000/products/mono-perc",
+   "sections": [
+    {
+     "heading": "Mono PERC Solar Panels — overview",
+     "text": "Engineered for performance. Built for India.\n\n420 to 560 W, up to 22 percent efficiency, 182 mm half-cut cells, backed by a long-term performance warranty.\n\nMono PERC (Passivated Emitter Rear Contact) technology adds a reflective passivation layer on the back of each cell. The result is simple: more photons captured, fewer electrons lost, and higher energy yield, even in India’s diffuse-light monsoon months."
+    },
+    {
+     "heading": "Mono PERC Solar Panels — Why Mono PERC",
+     "text": "Mono PERC (Passivated Emitter Rear Contact) technology adds a reflective passivation layer on the back of each cell. The result is simple: more photons captured, fewer electrons lost, and higher energy yield, even in India’s diffuse-light monsoon months."
+    },
+    {
+     "heading": "Mono PERC Solar Panels — Built for Indian weather",
+     "text": "India’s rooftops face dust, heat, monsoon humidity and long summers. Mono PERC modules are engineered for exactly these conditions, which is why they are the dependable default for most homes and small commercial buildings on our network.\n• Homes — higher-wattage 540 to 560 W modules reduce the number of panels and fittings needed\n• Small commercial buildings\n• Humid, coastal and monsoon-exposed sites"
+    },
+    {
+     "heading": "Mono PERC Solar Panels — technical specifications",
+     "text": "Power classes: 420 W to 560 W\nModule efficiency: Up to 22.0%\nCell type: Monocrystalline PERC, 182 mm half-cut\nMechanical load: 5400 Pa snow / 2400 Pa wind\nMaterials: PID-resistant glass and EVA\nTesting: 100% EL and flash testing\nCertifications: ALMM, BIS, IEC\nWarranty: 30-year performance warranty\nManufactured at: Multi Solar’s 200 MW plant, Sahibabad, Ghaziabad, UP"
+    },
+    {
+     "heading": "What wattage Mono PERC panel should I choose?",
+     "text": "Q: What wattage Mono PERC panel should I choose?\nA: For homes, higher-wattage modules in the 540 to 560 W range reduce the number of panels and fittings needed. We select the right wattage based on your roof area and target system size."
+    },
+    {
+     "heading": "Are Mono PERC panels good for the monsoon?",
+     "text": "Q: Are Mono PERC panels good for the monsoon?\nA: Yes. Their strong low-light response and PID-resistant materials keep generation stable through humid and overcast monsoon months."
+    },
+    {
+     "heading": "What is the warranty on Mono PERC panels?",
+     "text": "Q: What is the warranty on Mono PERC panels?\nA: Mono PERC modules carry a 30-year performance warranty, supported by 100 percent EL and flash testing at the plant."
+    }
+   ]
+  },
+  {
+   "title": "TOPCon Solar Panels",
+   "category": "product",
+   "url": "http://localhost:3000/products/topcon",
+   "sections": [
+    {
+     "heading": "TOPCon Solar Panels — overview",
+     "text": "Engineered for performance. Built for India.\n\nNext-generation efficiency, excellent performance on hazy and cloudy days, ready for bifacial designs.\n\nTOPCon (Tunnel Oxide Passivated Contact) modules are the next leap in solar-cell engineering. A microscopic tunnel-oxide layer passivates the cell surface, sharply reducing electron and hole recombination and unlocking higher conversion efficiency than conventional PERC designs.\n\nIn plain terms, more of the sunlight that lands on the panel becomes usable electricity."
+    },
+    {
+     "heading": "TOPCon Solar Panels — What makes TOPCon different",
+     "text": "TOPCon (Tunnel Oxide Passivated Contact) modules are the next leap in solar-cell engineering. A microscopic tunnel-oxide layer passivates the cell surface, sharply reducing electron and hole recombination and unlocking higher conversion efficiency than conventional PERC designs.\n\nIn plain terms, more of the sunlight that lands on the panel becomes usable electricity."
+    },
+    {
+     "heading": "TOPCon Solar Panels — advantages",
+     "text": "Surface passivation: The ultra-thin oxide layer cuts recombination losses at the metal and silicon interface.\nHigher efficiency: Fewer carrier losses mean superior power output and better performance per square metre.\nImproved low-light response: Stronger carrier lifetime delivers more energy on cloudy and hazy days.\nLong-term reliability: Lower recombination reduces degradation, supporting a 25-year linear power warranty.\nFuture-ready design: Compatible with bifacial architectures and large-format wafers."
+    },
+    {
+     "heading": "TOPCon Solar Panels — Where TOPCon is the right choice",
+     "text": "\n• Rooftops where space is limited and you want maximum generation\n• Sites with frequent haze, cloud or early-morning and late-evening demand\n• Commercial and industrial projects planning bifacial or high-density layouts"
+    },
+    {
+     "heading": "TOPCon Solar Panels — technical specifications",
+     "text": "Cell technology: Tunnel-oxide passivated contact\nWafer format: Large-format wafers\nLow-light output: Optimised low-light response\nDesign: Bifacial-ready\nCertifications: ALMM, BIS, IEC\nWarranty: 25-year linear power warranty\nPower class & dimensions: Per current datasheet — available on request"
+    },
+    {
+     "heading": "Is TOPCon better than Mono PERC?",
+     "text": "Q: Is TOPCon better than Mono PERC?\nA: TOPCon generally offers higher efficiency and better low-light performance, so it produces more energy from the same area. Mono PERC often wins on upfront value. The best choice depends on your roof size, budget and generation target."
+    },
+    {
+     "heading": "Do TOPCon panels work well in cloudy weather?",
+     "text": "Q: Do TOPCon panels work well in cloudy weather?\nA: Yes. The improved carrier lifetime gives TOPCon a stronger low-light response, so it performs better on hazy and overcast days than older cell types."
+    },
+    {
+     "heading": "What warranty do Multi Solar TOPCon panels carry?",
+     "text": "Q: What warranty do Multi Solar TOPCon panels carry?\nA: TOPCon modules are supported by a 25-year linear power warranty, backed by low long-term degradation."
+    }
+   ]
+  },
+  {
+   "title": "Residential rooftop solar",
+   "category": "residential",
+   "url": "http://localhost:3000/solutions/residential",
+   "sections": [
+    {
+     "heading": "How much roof do I need for home solar?",
+     "text": "Q: How much roof do I need for home solar?\nA: As a rule of thumb, allow roughly 80 to 100 square feet of shadow-free roof per kilowatt. A 3 kW system needs about 250 to 300 square feet."
+    },
+    {
+     "heading": "Will solar cover my full electricity bill?",
+     "text": "Q: Will solar cover my full electricity bill?\nA: A correctly sized system can offset most or all of your daytime consumption. With net metering, daytime surplus offsets evening grid use."
+    },
+    {
+     "heading": "Can I run a 1.5 ton AC on solar?",
+     "text": "Q: Can I run a 1.5 ton AC on solar?\nA: Yes. A 1.5 ton air conditioner draws roughly 1.5 to 2 units an hour, so a 3 kW or larger system generating 12 to 15 units a day can comfortably run an AC along with regular loads during daylight hours."
+    },
+    {
+     "heading": "How many years do solar panels last?",
+     "text": "Q: How many years do solar panels last?\nA: Quality panels last 25 years or more. Multi Solar modules carry up to a 30-year performance warranty, so they keep generating well beyond the payback period."
+    }
+   ]
+  },
+  {
+   "title": "1 kW home solar system",
+   "category": "residential",
+   "url": "http://localhost:3000/solutions/residential/1kw-solar-system",
+   "sections": [
+    {
+     "heading": "How many units does a 1kW system generate?",
+     "text": "Q: How many units does a 1kW system generate?\nA: About 100 to 120 units per month in North Indian conditions, depending on sunlight and orientation."
+    }
+   ]
+  },
+  {
+   "title": "2 kW home solar system",
+   "category": "residential",
+   "url": "http://localhost:3000/solutions/residential/2kw-solar-system",
+   "sections": [
+    {
+     "heading": "Is a 2kW system enough for a small home?",
+     "text": "Q: Is a 2kW system enough for a small home?\nA: Yes, for most small families a 2 kW system covers lighting, fans, television and a refrigerator, and offsets a large part of the monthly bill."
+    }
+   ]
+  },
+  {
+   "title": "5 kW home solar system",
+   "category": "residential",
+   "url": "http://localhost:3000/solutions/residential/5kw-solar-system",
+   "sections": [
+    {
+     "heading": "How much roof do I need for a 5kW system?",
+     "text": "Q: How much roof do I need for a 5kW system?\nA: Around 400 to 500 square feet of shadow-free roof. We confirm the exact layout during the site survey."
+    }
+   ]
+  },
+  {
+   "title": "10 kW home solar system",
+   "category": "residential",
+   "url": "http://localhost:3000/solutions/residential/10kw-solar-system",
+   "sections": [
+    {
+     "heading": "10 kW system",
+     "text": "A 10 kW rooftop system is built for villas, bungalows and homes with very high consumption, or for small commercial premises. It generates well over 1,200 units a month and delivers substantial monthly savings on a large bill."
+    },
+    {
+     "heading": "Can I install a 10kW system on a residential connection?",
+     "text": "Q: Can I install a 10kW system on a residential connection?\nA: Yes, where the sanctioned load is 10 kW or below and you have a residential meter. We confirm eligibility and net-metering limits with your DISCOM."
+    },
+    {
+     "heading": "How many panels does a 10kW system need?",
+     "text": "Q: How many panels does a 10kW system need?\nA: About 18 to 20 high-wattage Mono PERC modules, subject to the exact wattage and roof layout."
+    }
+   ]
+  },
+  {
+   "title": "Commercial solar",
+   "category": "commercial",
+   "url": "http://localhost:3000/solutions/commercial",
+   "sections": [
+    {
+     "heading": "Why businesses are going solar",
+     "text": "For most commercial buildings, electricity is a large and rising fixed cost. Rooftop solar converts that cost into a fixed, predictable asset on your own roof. Because commercial consumption is highest during daylight hours, generation lines up neatly with demand, which makes the payback for offices, retail and industrial sheds particularly attractive. Solar is no longer a sustainability debate; it is an accounting decision with a clear internal rate of return."
+    },
+    {
+     "heading": "Where commercial solar fits",
+     "text": "Offices and IT parks: Offset high daytime air-conditioning and equipment load.\nRetail, malls and showrooms: Stabilise costs against tariff hikes.\nHotels and hospitals: Round-the-clock operations with strong daytime demand.\nWarehouses and cold storage: Large roofs, ideal for sizeable systems."
+    },
+    {
+     "heading": "CapEx or OpEx, your choice",
+     "text": "Under a CapEx model you own the system outright and keep all the savings, with the fastest long-term return.\nUnder an OpEx or PPA model you pay only for the units generated with little or no upfront cost.\nWe help you compare both against your tariff and tax position so the financial structure matches your goals."
+    },
+    {
+     "heading": "What we deliver",
+     "text": "As a manufacturer and EPC, we handle the full project: load study, feasibility and yield modelling, structural design, supply of certified modules, installation, net metering and commissioning. One accountable partner from first survey to handover, with documentation ready for audits and ESG reporting."
+    },
+    {
+     "heading": "What is the payback period for commercial solar?",
+     "text": "Q: What is the payback period for commercial solar?\nA: For most commercial rooftops in India, payback falls in roughly three to five years, after which the power is effectively free for the life of the system. The exact figure depends on your tariff, consumption pattern and roof."
+    },
+    {
+     "heading": "Should we choose CapEx or OpEx?",
+     "text": "Q: Should we choose CapEx or OpEx?\nA: CapEx maximises long-term savings and suits businesses that can invest upfront and use the tax benefits. OpEx or PPA suits those who prefer no capital outlay and a fixed per-unit rate. We model both for your specific case."
+    },
+    {
+     "heading": "Can solar power our daytime operations fully?",
+     "text": "Q: Can solar power our daytime operations fully?\nA: A correctly sized commercial system can offset most or all daytime consumption, with net metering balancing any shortfall or surplus."
+    }
+   ]
+  },
+  {
+   "title": "Industrial solar",
+   "category": "industrial",
+   "url": "http://localhost:3000/solutions/industrial",
+   "sections": [
+    {
+     "heading": "Why load pattern comes first",
+     "text": "Industrial solar projects fail more often from wrong assumptions about load than from any hardware fault. A plant that runs three shifts, has heavy motor starting currents, or draws power overnight needs a very different design from a single-shift unit. We begin with a detailed study of your load curve, contract demand and tariff slabs, then size and configure the system around how you actually consume power. This is the difference between a system that looks good on paper and one that delivers the projected savings."
+    },
+    {
+     "heading": "Rooftop and ground-mounted options",
+     "text": "Rooftop: Systems on factory sheds and warehouses use existing roof area to offset daytime load.\nGround-mounted: Systems on spare land scale beyond roof limits for larger generation.\nHybrid layouts: Combine rooftop and ground arrays where the site allows."
+    },
+    {
+     "heading": "Built for industrial reliability",
+     "text": "Our modules carry a robust mechanical load rating, PID-resistant materials and 100 percent EL and flash testing, so they hold up in dusty, hot and demanding industrial environments. We design the balance of system, structures and cabling to the same standard, with safety run to ISO 45001 practices."
+    },
+    {
+     "heading": "Captive and open-access ready",
+     "text": "Whether you want a captive plant for self-consumption or are exploring open-access procurement, we structure the project to fit your regulatory and commercial position, with complete documentation for approvals and audits."
+    },
+    {
+     "heading": "How do you size an industrial solar system?",
+     "text": "Q: How do you size an industrial solar system?\nA: We model your actual load curve, contract demand and tariff structure, then size the system to maximise self-consumption and savings rather than simply filling the roof."
+    },
+    {
+     "heading": "Can solar reduce our demand charges?",
+     "text": "Q: Can solar reduce our demand charges?\nA: Solar primarily reduces energy charges by offsetting units consumed during the day. Combined with the right design, it can also help manage peak draw. We quantify both in the feasibility study."
+    },
+    {
+     "heading": "Do you handle ground-mounted plants?",
+     "text": "Q: Do you handle ground-mounted plants?\nA: Yes. Where roof area is limited, we design ground-mounted or hybrid systems on available land to reach the required capacity."
+    }
+   ]
+  },
+  {
+   "title": "Solar EPC services",
+   "category": "epc",
+   "url": "http://localhost:3000/solar-epc-services",
+   "sections": [
+    {
+     "heading": "One partner, full accountability",
+     "text": "EPC stands for Engineering, Procurement and Construction. In practice it means one partner takes responsibility for the entire project, from the first feasibility study to a commissioned, grid-connected plant.\n\nBecause Multi Solar manufactures the modules and executes the EPC, there is no finger-pointing between supplier and installer. Accountability stays in one place, which is exactly what developers and enterprises want for long-term deployments."
+    },
+    {
+     "heading": "Our EPC process",
+     "text": "1. Site assessment: Feasibility and site assessment, including load study and shadow analysis.\n2. Engineering: Engineering design, yield modelling and bill of materials.\n3. Procurement: Procurement of certified modules, inverters, structures and balance of system.\n4. Installation: Construction and installation by trained teams to ISO safety practices.\n5. Commissioning: Net metering, inspection, testing and commissioning.\n6. Monitoring & support: Handover with documentation, plus monitoring and after-sales support."
+    },
+    {
+     "heading": "Why a manufacturer-led EPC is different",
+     "text": "When the EPC also makes the panels, quality control runs end to end. We can match module selection to the site, guarantee certified ALMM-listed supply, and stand behind the full system. For projects under PM Surya Ghar and other government schemes, our domestic manufacturing supports the domestic content requirements now enforced."
+    },
+    {
+     "heading": "Compliance and documentation",
+     "text": "Every project ships with the certifications, test reports and as-built drawings needed for approvals, audits and warranty claims. For institutional and public-sector clients we align fully with MNRE and ALMM requirements."
+    },
+    {
+     "heading": "What does a solar EPC company do?",
+     "text": "Q: What does a solar EPC company do?\nA: A solar EPC company handles engineering, procurement and construction: it designs the system, sources the equipment, installs and commissions it, and hands over a working plant with documentation."
+    },
+    {
+     "heading": "Why choose a manufacturer-led EPC?",
+     "text": "Q: Why choose a manufacturer-led EPC?\nA: Because quality control runs from cell to commissioning. Multi Solar makes the modules and executes the project, so accountability and certified supply stay in one place."
+    },
+    {
+     "heading": "Do you handle government and DCR-compliant projects?",
+     "text": "Q: Do you handle government and DCR-compliant projects?\nA: Yes. Our domestic manufacturing supports the domestic content and ALMM requirements that apply to PM Surya Ghar and other government schemes."
+    }
+   ]
+  },
+  {
+   "title": "Frequently asked questions",
+   "category": "faq",
+   "url": "http://localhost:3000/",
+   "sections": [
+    {
+     "heading": "Is Multi Solar a solar panel manufacturer or a reseller?",
+     "text": "Q: Is Multi Solar a solar panel manufacturer or a reseller?\nA: Multi Solar is a domestic manufacturer. We produce certified TOPCon and Mono PERC modules at our facility in Sahibabad, Ghaziabad, for residential, commercial and utility-scale use."
+    },
+    {
+     "heading": "Which solar panel is best for an Indian home?",
+     "text": "Q: Which solar panel is best for an Indian home?\nA: For most homes, a Mono PERC system offers the best balance of efficiency, durability and value. Where roof space is tight or you want maximum generation, TOPCon is the stronger choice. We recommend the right option after a quick site assessment."
+    },
+    {
+     "heading": "Do you provide installation, or only panels?",
+     "text": "Q: Do you provide installation, or only panels?\nA: Both. We manufacture the panels and deliver complete EPC, including design, installation, net metering and commissioning across India."
+    },
+    {
+     "heading": "When was Multi Solar established?",
+     "text": "Q: When was Multi Solar established?\nA: Multi Solar is the newest venture of Multi Infrastructure & Engineering Pvt. Ltd., with its manufacturing foundation laid in 2025 at the CEL facility in Sahibabad, Ghaziabad."
+    },
+    {
+     "heading": "What is Multi Solar's manufacturing capacity?",
+     "text": "Q: What is Multi Solar's manufacturing capacity?\nA: The plant runs at 200 MW annual module capacity, with planned expansion to 500 MW."
+    },
+    {
+     "heading": "What is the CEL partnership?",
+     "text": "Q: What is the CEL partnership?\nA: A long-term technology and supply tie-up with Central Electronics Limited that gives Multi Solar access to high-efficiency cells, joint quality protocols and a shared innovation pipeline."
+    }
+   ]
+  },
+  {
+   "title": "Contact Multi Solar",
+   "category": "contact",
+   "url": "http://localhost:3000/contact",
+   "sections": [
+    {
+     "heading": "Corporate Office",
+     "text": "Corporate Office: Multi Infrastructure & Engineering Pvt. Ltd., 317–318, 3rd Floor, Tower-1, DLF Corporate Greens, SPR Road, Sector-74A, Gurugram, Haryana 122004. Phone: +91 93193 64618, +91 124 518 1268. Email: info@multiinfra.in."
+    },
+    {
+     "heading": "Manufacturing Plant",
+     "text": "Manufacturing Plant: Central Electronics Limited, 4, Industrial Area, Sour Urja Marg, Sahibabad, Ghaziabad, Uttar Pradesh 201010. Phone: +91 70421 11689. Email: info@multisolar.in."
+    },
+    {
+     "heading": "Social media",
+     "text": "YouTube: https://www.youtube.com/@MultiSolar_in\nX (Twitter): https://x.com/multisolar_in\nFacebook: https://www.facebook.com/multisolar.in\nInstagram: https://www.instagram.com/multisolar.in/\nLinkedIn: https://www.linkedin.com/company/multisolar-in"
+    }
+   ]
+  },
+  {
+   "title": "Multi Infrastructure & Engineering signs landmark 200 MW solar module manufacturing agreement with CEL in Sahibabad",
+   "category": "company",
+   "url": "http://localhost:3000/news-events/cel-200-mw-solar-module-manufacturing-agreement",
+   "sections": [
+    {
+     "heading": "Multi Infrastructure & Engineering signs landmark 200 MW solar module manufacturing agreement with CEL in Sahibabad",
+     "text": "On 26 June 2025, Multi Infrastructure and Engineering Pvt. Ltd. (MIEPL) and Central Electronics Limited (CEL) signed a 200 MW solar module manufacturing agreement in Sahibabad, Ghaziabad, Uttar Pradesh, in the presence of the Hon’ble Chief Minister of Uttar Pradesh, Shri Yogi Adityanath."
+    },
+    {
+     "heading": "Multi Infrastructure & Engineering signs landmark 200 MW solar module manufacturing agreement with CEL in Sahibabad",
+     "text": "On 26 June 2025, Multi Infrastructure and Engineering Private Limited (MIEPL) and Central Electronics Limited (CEL) signed a 200 MW solar module manufacturing agreement in Sahibabad, Ghaziabad, Uttar Pradesh. The ceremony was graced by the presence of the Hon’ble Chief Minister of Uttar Pradesh, Shri Yogi Adityanath."
+    },
+    {
+     "heading": "A leap towards sustainable energy independence",
+     "text": "The facility falls under the ‘Make in India’ initiative and reduces reliance on imported components. The partnership follows a revenue-sharing model."
+    },
+    {
+     "heading": "Strategic location",
+     "text": "Sahibabad, Ghaziabad was chosen as the site of the 200 MW solar module manufacturing facility."
+    },
+    {
+     "heading": "About the partners",
+     "text": "MIEPL is an established engineering, procurement and construction company with a track record in railway electrification, gas and water pipelines, electrical substations and civil works across 11 Indian states.\n\nCEL is a Government of India enterprise under the Ministry of Science and Technology and a pioneer in indigenous solar technology."
+    }
+   ]
+  }
+ ]
+}

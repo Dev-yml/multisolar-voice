@@ -1,0 +1,22 @@
+# Voice Agent server (apps/voice) — needs an always-on host with WebSockets (Fly.io / Railway / Render).
+FROM node:22-slim
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Workspace manifests first (better layer caching)
+COPY package.json package-lock.json ./
+COPY packages/core/package.json packages/core/
+COPY packages/data/package.json packages/data/
+COPY apps/voice/package.json apps/voice/
+COPY apps/console/package.json apps/console/
+RUN npm ci --workspace @msv/voice --workspace @msv/data --workspace @msv/core --include=dev --ignore-scripts
+
+COPY packages packages
+COPY apps/voice apps/voice
+COPY apps/console/prisma apps/console/prisma
+RUN npm run generate --workspace @msv/data
+
+EXPOSE 8080
+ENV PORT=8080
+CMD ["npm", "run", "start", "--workspace", "@msv/voice"]

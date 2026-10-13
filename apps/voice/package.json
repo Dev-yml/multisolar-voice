@@ -1,0 +1,25 @@
+{
+  "name": "@msv/voice",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Multi Solar Voice Agent server: Tata Smartflo voice streaming \u21c4 Sarvam speech \u21c4 the agent, plus the auto-dialer. Always-on (not Vercel).",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "start": "tsx --env-file-if-exists=.env src/index.ts",
+    "sim:day": "tsx src/sim/run-day.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@msv/core": "*",
+    "@msv/data": "*",
+    "tsx": "^4.20.6",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}

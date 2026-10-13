@@ -1,0 +1,327 @@
+// Multi Solar Voice: its own database (Supabase Postgres), separate from the website.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  /// Supabase "Transaction pooler" (port 6543, ?pgbouncer=true) — used by the app, incl. Vercel.
+  url       = env("DATABASE_URL")
+  /// Supabase "Session pooler" (port 5432) — used by migrations.
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  SALES_ADMIN
+  SALES_EXECUTIVE
+  SUPPORT
+}
+
+enum Segment {
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  INTERESTED
+  SITE_VISIT
+  NOT_INTERESTED
+  WON
+  LOST
+  DNC
+}
+
+enum Direction {
+  INBOUND
+  OUTBOUND
+}
+
+enum Outcome {
+  SITE_VISIT_BOOKED
+  INTERESTED
+  CALLBACK
+  NOT_INTERESTED
+  ESCALATED
+  DNC
+  WRONG_NUMBER
+  COMPLETED
+  NO_ANSWER
+  BUSY
+  FAILED
+}
+
+enum Speaker {
+  AGENT
+  CUSTOMER
+  SYSTEM
+}
+
+enum EscalationStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum VisitStatus {
+  BOOKED
+  DONE
+  CANCELLED
+}
+
+enum DocStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  name         String       @db.VarChar(120)
+  email        String       @unique @db.VarChar(190)
+  passwordHash String       @db.VarChar(100)
+  role         Role         @default(SALES_EXECUTIVE)
+  active       Boolean      @default(true)
+  lastLoginAt  DateTime?
+  /// Two-factor sign-in (TOTP). Secret is AES-256-GCM encrypted with a key derived from AUTH_SECRET.
+  mfaSecret      String?    @db.VarChar(200)
+  mfaEnabledAt   DateTime?
+  /// SHA-256 hashes of unused one-time recovery codes.
+  mfaRecovery    Json?
+  /// Last accepted 30-second time step — a code can never be used twice.
+  mfaLastStep    Int?
+  /// Bumped on password change / MFA reset: every older session stops working.
+  sessionVersion Int        @default(0)
+  createdAt    DateTime     @default(now())
+  leads        Lead[]
+  escalations  Escalation[]
+  documents    KnowledgeDocument[]
+  audit        AuditLog[]
+}
+
+model Lead {
+  id           Int          @id @default(autoincrement())
+  name         String?      @db.VarChar(120)
+  phone        String       @unique @db.VarChar(20)
+  city         String?      @db.VarChar(80)
+  pincode      String?      @db.VarChar(6)
+  segment      Segment?
+  monthlyBill  Int?
+  language     String?      @db.VarChar(2)
+  status       LeadStatus   @default(NEW)
+  source       String       @default("manual") @db.VarChar(40)
+  consentAt    DateTime?
+  /// Dialer: outbound attempts so far, when the last one was, and when to call next (callbacks).
+  attempts      Int         @default(0)
+  lastAttemptAt DateTime?
+  nextCallAt    DateTime?
+  notes        String?      @db.Text
+  assignedToId Int?
+  assignedTo   User?        @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  calls        Call[]
+  escalations  Escalation[]
+  visits       SiteVisit[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([nextCallAt])
+}
+
+model Call {
+  id             Int          @id @default(autoincrement())
+  direction      Direction
+  fromNumber     String?      @db.VarChar(20)
+  toNumber       String?      @db.VarChar(20)
+  leadId         Int?
+  lead           Lead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  /// Tata Smartflo identifiers (real calls).
+  providerCallId String?      @unique @db.VarChar(80)
+  providerRefId  String?      @db.VarChar(80)
+  language       String       @default("en") @db.VarChar(2)
+  startedAt      DateTime     @default(now())
+  /// When the customer picked up (phone calls). Null while ringing / not answered.
+  answeredAt     DateTime?
+  endedAt        DateTime?
+  durationSec    Int?
+  outcome        Outcome?
+  summary        String?      @db.Text
+  recordingUrl   String?      @db.VarChar(500)
+  /// Estimated cost in paise.
+  costPaise      Int?
+  /// Browser test call, not a phone call.
+  isTest         Boolean      @default(false)
+  /// Saved conversation state between turns (JSON).
+  state          Json?
+  turns          CallTurn[]
+  escalations    Escalation[]
+  visits         SiteVisit[]
+
+  @@index([startedAt])
+  @@index([outcome])
+}
+
+model CallTurn {
+  id       Int      @id @default(autoincrement())
+  callId   Int
+  call     Call     @relation(fields: [callId], references: [id], onDelete: Cascade)
+  seq      Int
+  speaker  Speaker
+  text     String   @db.Text
+  language String?  @db.VarChar(2)
+  tool     String?  @db.VarChar(40)
+  toolData Json?
+  at       DateTime @default(now())
+
+  @@index([callId, seq])
+}
+
+model Escalation {
+  id           Int              @id @default(autoincrement())
+  callId       Int?
+  call         Call?            @relation(fields: [callId], references: [id], onDelete: SetNull)
+  leadId       Int?
+  lead         Lead?            @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  reason       String           @db.VarChar(30)
+  question     String           @db.Text
+  status       EscalationStatus @default(OPEN)
+  assignedToId Int?
+  assignedTo   User?            @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  dueAt        DateTime
+  resolution   String?          @db.Text
+  resolvedAt   DateTime?
+  createdAt    DateTime         @default(now())
+
+  @@index([status, dueAt])
+}
+
+model SiteVisit {
+  id        Int         @id @default(autoincrement())
+  leadId    Int?
+  lead      Lead?       @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  callId    Int?
+  call      Call?       @relation(fields: [callId], references: [id], onDelete: SetNull)
+  date      DateTime    @db.Date
+  slot      String      @db.VarChar(12)
+  label     String      @db.VarChar(80)
+  status    VisitStatus @default(BOOKED)
+  createdAt DateTime    @default(now())
+
+  @@index([date])
+}
+
+model Callback {
+  id        Int      @id @default(autoincrement())
+  leadId    Int?
+  callId    Int?
+  date      DateTime @db.Date
+  slot      String?  @db.VarChar(12)
+  label     String   @db.VarChar(80)
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model DoNotCall {
+  phone     String   @id @db.VarChar(20)
+  reason    String   @default("customer request") @db.VarChar(120)
+  createdAt DateTime @default(now())
+}
+
+model PriceRow {
+  id          Int      @id @default(autoincrement())
+  segment     Segment
+  kw          Float
+  priceMin    Int
+  priceMax    Int
+  includesGst Boolean  @default(true)
+  /// Sample data from the public website until the official sheet arrives.
+  sample      Boolean  @default(true)
+  note        String?  @db.VarChar(200)
+  updatedAt   DateTime @updatedAt
+
+  @@unique([segment, kw])
+}
+
+model SizingRow {
+  id          Int   @id @default(autoincrement())
+  kw          Float @unique
+  billMin     Int
+  billMax     Int
+  roofSqftMin Int
+  roofSqftMax Int
+  unitsMin    Int
+  unitsMax    Int
+}
+
+model SubsidyRule {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(80)
+  scope      String   @db.VarChar(10)
+  state      String?  @db.VarChar(40)
+  segment    Segment  @default(RESIDENTIAL)
+  perKwFirst Int
+  firstKw    Float
+  perKwNext  Int      @default(0)
+  nextKw     Float    @default(0)
+  cap        Int
+  active     Boolean  @default(true)
+  source     String?  @db.VarChar(300)
+  updatedAt  DateTime @updatedAt
+}
+
+model KnowledgeDocument {
+  id           Int              @id @default(autoincrement())
+  title        String           @db.VarChar(200)
+  category     String           @db.VarChar(40)
+  version      String           @db.VarChar(40)
+  status       DocStatus        @default(ACTIVE)
+  fileName     String?          @db.VarChar(200)
+  uploadedById Int?
+  uploadedBy   User?            @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime         @default(now())
+  chunks       KnowledgeChunk[]
+}
+
+model KnowledgeChunk {
+  id         Int               @id @default(autoincrement())
+  documentId Int
+  document   KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  ordinal    Int
+  heading    String?           @db.VarChar(200)
+  text       String            @db.Text
+
+  @@index([documentId, ordinal])
+}
+
+model AgentSettings {
+  id              Int     @id @default(1)
+  agentName       String  @default("Multi Solar Voice Agent") @db.VarChar(80)
+  voice           String  @default("female") @db.VarChar(10)
+  startLanguage   String  @default("en") @db.VarChar(2)
+  callingStart    String  @default("09:00") @db.VarChar(5)
+  callingEnd      String  @default("21:00") @db.VarChar(5)
+  escalationHours Int     @default(48)
+  transferNumber  String? @db.VarChar(20)
+  monthlyBudget   Int     @default(15000)
+  outboundEnabled Boolean @default(false)
+  maxAttempts     Int     @default(3)
+  retryGapMinutes Int     @default(240)
+  maxConcurrent   Int     @default(3)
+}
+
+model AuditLog {
+  id       Int      @id @default(autoincrement())
+  userId   Int?
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action   String   @db.VarChar(60)
+  entity   String?  @db.VarChar(40)
+  entityId String?  @db.VarChar(40)
+  detail   Json?
+  at       DateTime @default(now())
+
+  @@index([at])
+}

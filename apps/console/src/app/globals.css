@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+/*
+ * Multi Solar Voice Console — "solar dashboard" style: warm off-white canvas, white cards with soft
+ * shadows, a deep slate sidebar, solar-orange actions and green for success. Numbers are big and dark.
+ * (Class names .glass / .neu / .neu-inset are kept so every page picks the style up.)
+ */
+@theme {
+  --color-ink: #121c22;
+  --color-ink-2: #26343b;
+  --color-paper: #f6f4f0;
+  --color-stone: #efece6;
+  --color-muted: #5d6b72;
+  --color-line: #ebe7e0;
+  --color-navy: #1b2a30;
+  --color-navy-2: #22363d;
+  --color-navy-3: #178a4c;
+  --color-slate: #1b2a30;
+  --color-accent: #f47b20;
+  --color-accent-strong: #e06a10;
+  --color-accent-ink: #b35309;
+  --color-green: #1f9d55;
+  --color-green-soft: #e6f6ec;
+  --color-danger: #d1333b;
+  --color-leaf: #cce6d7;
+  --color-leaf-2: #b8dbc7;
+  --color-leaf-ink: #3d5446;
+  --font-sans: var(--font-ui), var(--font-deva), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  --card-shadow: 0 1px 2px rgb(18 28 34 / 0.04), 0 6px 18px -6px rgb(18 28 34 / 0.08);
+  --card-shadow-hover: 0 2px 4px rgb(18 28 34 / 0.05), 0 16px 32px -12px rgb(18 28 34 / 0.16);
+  --shadow-md: var(--card-shadow-hover);
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  background: radial-gradient(900px 420px at 100% 0%, rgb(244 123 32 / 0.06), transparent 70%), var(--color-paper);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: rgb(244 123 32 / 0.25); }
+
+@layer components {
+.eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+
+/* Surfaces */
+.glass { background: #fff; border: 1px solid rgb(18 28 34 / 0.05); box-shadow: var(--card-shadow); }
+.glass-strong { background: #fff; border: 1px solid var(--color-line); box-shadow: 0 24px 48px -16px rgb(18 28 34 / 0.28); }
+.glass-dark { background: linear-gradient(180deg, #1b2a30 0%, #1f3137 55%, #172328 100%); }
+.neu { background: #fff; border: 1px solid var(--color-line); box-shadow: 0 1px 2px rgb(18 28 34 / 0.05); }
+.neu-inset { background: #f4f2ee; border: 1px solid #ece8e1; }
+.neu-inset-sm { background: #f4f2ee; }
+
+/* Inputs */
+.input {
+  height: 2.75rem; width: 100%; border-radius: 0.9rem; border: 1px solid #e6e2da; background: #fff;
+  padding: 0 0.95rem; font-size: 0.9rem; font-weight: 500; color: var(--color-ink); outline: none;
+  box-shadow: 0 1px 2px rgb(18 28 34 / 0.03); transition: border-color .15s, box-shadow .15s;
+}
+textarea.input { height: auto; padding: 0.65rem 0.95rem; }
+.input::placeholder { color: #8a959b; font-weight: 400; }
+.input:hover { border-color: #d8d2c7; }
+.input:focus { border-color: var(--color-accent); box-shadow: 0 0 0 4px rgb(244 123 32 / 0.15); }
+select.input {
+  appearance: none; padding-right: 2.3rem; background-repeat: no-repeat; background-position: right 0.75rem center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235d6b72' stroke-width='2.2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+input[type="checkbox"] { accent-color: var(--color-accent); width: 1.05rem; height: 1.05rem; }
+
+/* Buttons: dark slate (default), solar orange (accent), white outline (ghost) */
+.btn {
+  display: inline-flex; height: 2.75rem; align-items: center; justify-content: center; gap: 0.5rem; white-space: nowrap;
+  border-radius: 0.9rem; padding: 0 1.2rem; font-size: 0.9rem; font-weight: 700; color: #fff;
+  background: linear-gradient(180deg, #2a3f46, #1b2a30); border: 1px solid rgb(255 255 255 / 0.06);
+  box-shadow: 0 8px 18px -10px rgb(18 28 34 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  transition: transform .12s, box-shadow .15s, filter .15s, background .15s;
+}
+.btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); filter: brightness(0.96); }
+.btn:disabled { opacity: 0.55; pointer-events: none; }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px #fff, 0 0 0 6px rgb(244 123 32 / 0.5); }
+.btn-accent {
+  color: #fff; background: linear-gradient(180deg, #ff9338, #f47b20); border-color: rgb(255 255 255 / 0.15);
+  box-shadow: 0 10px 22px -10px rgb(244 123 32 / 0.75), inset 0 1px 0 rgb(255 255 255 / 0.3);
+}
+.btn-ghost { color: var(--color-ink); background: #fff; border: 1px solid #e3ded5; box-shadow: 0 1px 2px rgb(18 28 34 / 0.05); }
+.btn-ghost:hover { filter: none; border-color: #d3ccc0; background: #fffdfa; }
+.btn-danger { background: linear-gradient(180deg, #e24a52, #c4262e); box-shadow: 0 10px 22px -10px rgb(209 51 59 / 0.7), inset 0 1px 0 rgb(255 255 255 / 0.2); }
+.btn-sm { height: 2.25rem; padding: 0 0.9rem; font-size: 0.8rem; border-radius: 0.75rem; }
+
+/* Numbers that must read at a glance */
+.digits { font-variant-numeric: tabular-nums; font-weight: 800; letter-spacing: -0.03em; color: var(--color-ink); }
+
+/* Tables */
+.table { width: 100%; font-size: 0.9rem; border-collapse: separate; border-spacing: 0; }
+.table th {
+  text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #6b787e;
+  padding: 0.85rem 1rem; background: #faf8f5; border-bottom: 1px solid var(--color-line); white-space: nowrap;
+}
+.table td { padding: 0.9rem 1rem; border-bottom: 1px solid #f1ede7; vertical-align: middle; }
+.table tbody tr { transition: background .12s; }
+.table tbody tr:hover { background: #fffaf4; }
+.table tr:last-child td { border-bottom: 0; }
+
+/* Misc */
+.card-hover { transition: transform .18s, box-shadow .18s; }
+.card-hover:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+.scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: rgb(120 130 135 / 0.35); border-radius: 99px; }
+.on-dark .btn { box-shadow: 0 12px 26px -12px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.3); }
+}
+
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+@media (prefers-reduced-motion: reduce) { .btn, .card-hover { transition: none; } .btn:hover, .card-hover:hover { transform: none; } }

@@ -1,0 +1,4 @@
+name,phone,city,segment,monthly_bill,consent
+Test Customer One,9000000001,Noida,RESIDENTIAL,3200,yes
+Test Customer Two,9000000002,Gurgaon,COMMERCIAL,25000,yes
+Test Customer Three,9000000003,Jaipur,,,no

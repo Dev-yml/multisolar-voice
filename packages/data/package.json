@@ -10,10 +10,12 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.134.0",
     "@msv/core": "*",
     "@prisma/client": "^6.19.3",
     "mammoth": "^1.13.0",
-    "unpdf": "^1.8.1"
+    "unpdf": "^1.8.1",
+    "zod": "^3.25.76"
   },
   "scripts": {
     "generate": "prisma generate --schema ../../apps/console/prisma/schema.prisma"

@@ -40,6 +40,10 @@ export type EscalationReason =
 
 export type DaySlot = "MORNING" | "AFTERNOON" | "EVENING";
 
+/** Who a customer can be handed to (keypad 1 / 2 / 3, or the AI's transfer tool). */
+export type Team = "SALES" | "SALES_HEAD" | "CRM";
+export const TEAMS: Team[] = ["SALES", "SALES_HEAD", "CRM"];
+
 export interface Slots {
   name?: string;
   segment?: Segment;
@@ -68,6 +72,12 @@ export interface CallState {
   lastSaid: string[];
   /** Short notes for the summary (questions asked, escalations, switches). */
   notes: string[];
+  /** Which brain runs this call: "claude" (AI conversation) or "rules" (built-in engine). Set at the start. */
+  brain?: "claude" | "rules";
+  /** Claude conversation memory, kept between turns (append-only). */
+  ai?: { messages: unknown[]; failures: number; allowed: string[] };
+  /** The customer asked to speak to a person: hand over after the agent's last sentence. */
+  transfer?: { team: Team };
 }
 
 // ---------------------------------------------------------------- tools

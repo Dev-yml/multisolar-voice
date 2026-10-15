@@ -2,11 +2,12 @@
 /**
  * Creates apps/voice/.env (Voice Agent server settings) from apps/console/.env.
  *
- *   npm run voice:env                                  # local
- *   npm run voice:env -- --public https://<app>.fly.dev # for the deployed server
+ *   npm run voice:env                                              # local
+ *   npm run voice:env -- --public https://<app>.up.railway.app     # for the deployed server
  *
- * Keeps any values already in apps/voice/.env (Sarvam / Smartflo keys you added) — so after adding
- * keys, run it again to refresh apps/voice/.env.fly (the file you send to Fly).
+ * Keeps any values already in apps/voice/.env (Smartflo keys you added) and copies ANTHROPIC_API_KEY /
+ * SARVAM_API_KEY from apps/console/.env when they are there — so after adding keys, run it again.
+ * Writes apps/voice/.env.deploy: paste it into Railway → Variables → Raw Editor (or `fly secrets import`).
  * Then prints exactly what to paste into the Smartflo portal.
  */
 import { randomBytes } from "node:crypto";
@@ -49,24 +50,28 @@ const values = {
   AGENT_API_KEY: c.AGENT_API_KEY,
   PUBLIC_URL: publicUrl,
   STREAM_KEY: v.STREAM_KEY || randomBytes(24).toString("base64url"),
-  SARVAM_API_KEY: v.SARVAM_API_KEY ?? "",
+  ANTHROPIC_API_KEY: v.ANTHROPIC_API_KEY || c.ANTHROPIC_API_KEY || "",
+  SARVAM_API_KEY: v.SARVAM_API_KEY || c.SARVAM_API_KEY || "",
   SMARTFLO_API_TOKEN: v.SMARTFLO_API_TOKEN ?? "",
   SMARTFLO_C2C_API_KEY: v.SMARTFLO_C2C_API_KEY ?? "",
-  SMARTFLO_CALLER_ID: v.SMARTFLO_CALLER_ID || "918065378787",
+  // All company numbers, comma-separated: outbound calls take turns using them.
+  SMARTFLO_CALLER_IDS: v.SMARTFLO_CALLER_IDS || v.SMARTFLO_CALLER_ID || "918065378787",
+  // Budget estimate per answered minute in paise (Tata ₹5 + Sarvam + Claude ≈ ₹7.30).
+  COST_PAISE_PER_MIN: v.COST_PAISE_PER_MIN || "730",
 };
 
 const body = [
   `# Voice Agent server — created by npm run voice:env on ${new Date().toISOString().slice(0, 10)}. Never commit or share.`,
-  // Unquoted on purpose: works for Node (--env-file) and for `fly secrets import`.
-  // Empty keys stay commented out (fly secrets import rejects empty values): fill in, then remove the #.
+  // Unquoted on purpose: works for Node (--env-file), Railway's Raw Editor and `fly secrets import`.
+  // Empty keys stay commented out: fill in, then remove the #.
   ...Object.entries(values).map(([k, val]) => (val ? `${k}=${val}` : `# ${k}=`)),
   "",
 ].join("\n");
 writeFileSync(voiceEnv, body);
-// Same values, no comments or empty lines — for: type apps\voice\.env.fly | fly secrets import
-const flyFile = join(root, "apps", "voice", ".env.fly");
-writeFileSync(flyFile, Object.entries(values).filter(([, val]) => val).map(([k, val]) => `${k}=${val}`).join("\n") + "\n");
-for (const f of [voiceEnv, flyFile]) {
+// Same values, no comments or empty lines — paste into Railway (Variables → Raw Editor) or `fly secrets import`.
+const deployFile = join(root, "apps", "voice", ".env.deploy");
+writeFileSync(deployFile, Object.entries(values).filter(([, val]) => val).map(([k, val]) => `${k}=${val}`).join("\n") + "\n");
+for (const f of [voiceEnv, deployFile]) {
   try {
     chmodSync(f, 0o600);
   } catch {
@@ -75,13 +80,14 @@ for (const f of [voiceEnv, flyFile]) {
 }
 
 const ws = publicUrl.replace(/^http/, "ws");
-console.log(`\n✓ wrote apps/voice/.env and apps/voice/.env.fly  (PUBLIC_URL = ${publicUrl})\n`);
+console.log(`\n✓ wrote apps/voice/.env and apps/voice/.env.deploy  (PUBLIC_URL = ${publicUrl})\n`);
 console.log("Paste into the Smartflo portal (keep these private):\n");
 console.log("  Settings → Channels → Voice Bot → Add an Endpoint → Static URL:");
 console.log(`    ${ws}/stream?key=${values.STREAM_KEY}\n`);
 console.log("  API Connect → Webhook → Add Webhook → URL (POST, JSON):");
 console.log(`    ${publicUrl}/smartflo/webhook?key=${values.STREAM_KEY}\n`);
-if (!values.SARVAM_API_KEY) console.log("  • SARVAM_API_KEY is empty — add it to apps/voice/.env (speech is simulated until then).");
+if (!values.SARVAM_API_KEY) console.log("  • SARVAM_API_KEY is empty — add it to apps/console/.env and run this again (speech is simulated until then).");
+if (!values.ANTHROPIC_API_KEY) console.log("  • ANTHROPIC_API_KEY is empty — add it to apps/console/.env and run this again (the rule engine answers until then).");
 if (!values.SMARTFLO_API_TOKEN || !values.SMARTFLO_C2C_API_KEY)
   console.log("  • SMARTFLO_API_TOKEN / SMARTFLO_C2C_API_KEY are empty — the phone line is simulated until you add them.");
 console.log("");

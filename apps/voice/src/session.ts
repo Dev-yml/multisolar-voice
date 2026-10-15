@@ -1,6 +1,6 @@
 import type { WebSocket } from "ws";
-import { speechSentences, type CallLang } from "@msv/core";
-import { callTurn, endCall, prisma, startCall } from "@msv/data";
+import { speechSentences, type CallLang, type Outcome, type Team } from "@msv/core";
+import { callTurn, endCall, pressKey, prisma, startCall } from "@msv/data";
 import { frames, mulawToPcm, rms } from "./audio";
 import { config } from "./config";
 import type { PhoneLine } from "./phone-line";
@@ -11,7 +11,11 @@ import type { SpeechToText, TextToSpeech } from "./providers/speech";
  *
  *   caller audio ─► voice-activity detection ─► speech-to-text ─► callTurn() ─► text-to-speech ─► caller
  *
- * - Barge-in: if the caller talks over the agent, the agent stops ("clear").
+ * - Barge-in: if the caller talks over the agent, the agent stops ("clear") and drops the rest of that reply.
+ * - Fast replies: with the AI brain, each sentence is spoken as soon as it is written.
+ * - Keypad: 1 = Sales, 2 = Sales Head, 3 = Customer care — offered at the end of the call, accepted any time.
+ *   The call ends and Smartflo rings the team member, then the customer.
+ * - Time limit: the AI wraps up near the target length; the call is closed 45 s after it.
  * - Silence: after a pause the agent asks once if the caller is there, then ends politely.
  * - Every turn is saved by callTurn(), exactly like a browser test call.
  */
@@ -32,6 +36,23 @@ const last10 = (n?: string | null) => (n ?? "").replace(/\D/g, "").slice(-10);
 const FRAME = 160; // 20 ms at 8 kHz
 
 const SILENCE_PROMPT: Record<CallLang, string> = { en: "Hello, can you hear me?", hi: "हेलो, क्या आप मुझे सुन पा रहे हैं?" };
+const TIME_UP: Record<CallLang, string> = {
+  en: "We're almost out of time. Our sales team will call you with all the details. Thank you!",
+  hi: "हमारा समय लगभग पूरा हो गया है। पूरी जानकारी के लिए हमारी सेल्स टीम आपको कॉल करेगी। धन्यवाद!",
+};
+const KEY_NAME: Record<Team, Record<CallLang, string>> = {
+  SALES: { en: "1 for sales", hi: "सेल्स के लिए 1" },
+  SALES_HEAD: { en: "2 for the sales head", hi: "सेल्स हेड के लिए 2" },
+  CRM: { en: "3 for customer care", hi: "कस्टमर केयर के लिए 3" },
+};
+function menuLine(teams: Team[], lang: CallLang) {
+  const parts = teams.map((t) => KEY_NAME[t][lang]);
+  const list = parts.length > 1 ? `${parts.slice(0, -1).join(", ")}${lang === "hi" ? ", या " : ", or "}${parts[parts.length - 1]}` : parts[0];
+  return lang === "hi" ? `हमारी टीम से बात करने के लिए ${list} दबाइए।` : `To speak to our team, press ${list}.`;
+}
+/** No keypad menu after these endings. */
+const NO_MENU: Outcome[] = ["DNC", "WRONG_NUMBER", "NOT_INTERESTED"];
+
 const SILENCE_BYE: Record<CallLang, string> = {
   en: "I can't hear you. Our team will call you back. Thank you!",
   hi: "आपकी आवाज़ नहीं आ रही। हमारी टीम आपको दोबारा कॉल करेगी। धन्यवाद!",
@@ -45,12 +66,24 @@ export class CallSession {
   private ended = false;
   private endAfterSpeech = false;
   private queue: Promise<void> = Promise.resolve();
+  private customer = "";
+  private answeredAt = 0;
+  private menu: Team[] = [];
+  private menuOffered = false;
+  private keyDeadline = 0;
+  private maxCallSeconds = 0;
+  private timeUp = false;
+  private handOver: { team: Team; number: string } | null = null;
+  /** Reply counter; a barge-in drops the rest of the reply that was being spoken. */
+  private turnSeq = 0;
+  private interruptedTurn = 0;
 
   // playback
   private pendingMarks = new Set<string>();
   private markSeq = 0;
   private lastActivity = Date.now();
   private prompted = false;
+  private closing = false;
 
   // voice activity detection
   private noise = 200;
@@ -105,6 +138,13 @@ export class CallSession {
       case "stop":
         this.finish("Caller hung up");
         break;
+      case "dtmf": {
+        // Smartflo sends the key the caller pressed; accept the usual field names.
+        const m = msg as { dtmf?: { digit?: unknown } | string; digit?: unknown };
+        const digit = String((typeof m.dtmf === "object" ? m.dtmf?.digit : m.dtmf) ?? m.digit ?? "").trim().slice(0, 1);
+        if (digit) this.enqueue(() => this.onKey(digit));
+        break;
+      }
       case "sim_text":
         // Simulator only: the fake customer "says" this.
         if (this.deps.sim) this.enqueue(() => this.handleText(String((msg as { text?: string }).text ?? "")));
@@ -139,6 +179,17 @@ export class CallSession {
     if (!callId) {
       const lead = last10(customer) ? await prisma.lead.findFirst({ where: { phone: { endsWith: last10(customer) } } }) : null;
       leadId = lead?.id ?? null;
+      // A new caller becomes a lead, so name, city, bill, visit and callback are saved against them.
+      // They called us, so a callback they ask for may be dialled; the dialer never redials an answered lead otherwise.
+      const mobile = last10(customer);
+      if (!leadId && !outbound && !this.deps.sim && /^[6-9]\d{9}$/.test(mobile)) {
+        const created = await prisma.lead.upsert({
+          where: { phone: mobile },
+          update: {},
+          create: { phone: mobile, source: "inbound_call", consentAt: new Date() },
+        });
+        leadId = created.id;
+      }
     }
     const res = await startCall({
       direction: outbound ? "OUTBOUND" : "INBOUND",
@@ -152,6 +203,10 @@ export class CallSession {
     });
     this.callId = res.callId;
     this.lang = res.state.lang;
+    this.customer = last10(customer);
+    this.answeredAt = Date.now();
+    this.menu = res.menu;
+    this.maxCallSeconds = res.maxCallSeconds;
     this.deps.log(`call ${this.callId} connected (${outbound ? "outbound" : "inbound"}, ${last10(customer) ? "…" + last10(customer).slice(-4) : "unknown number"})`);
     await this.say(res.say, res.state.lang);
     if (res.end) this.endAfterSpeech = true;
@@ -184,11 +239,12 @@ export class CallSession {
         this.chunks.push(pcm.subarray(i, i + FRAME));
         this.speechMs += 20;
         this.lastActivity = Date.now();
-        // Barge-in: the caller talks over the agent → stop the agent's audio.
+        // Barge-in: the caller talks over the agent → stop the agent's audio and the rest of that reply.
         if (this.speaking && this.speechMs >= v.bargeInMs) {
           this.send({ event: "clear", streamSid: this.streamSid });
           this.pendingMarks.clear();
-          this.endAfterSpeech = false;
+          this.interruptedTurn = this.turnSeq;
+          if (!this.handOver) this.endAfterSpeech = false;
         }
         if (this.silentMs >= v.endSilenceMs || this.speechMs >= v.maxUtteranceMs) {
           const audio = concat(this.chunks);
@@ -211,15 +267,58 @@ export class CallSession {
   }
 
   private async handleText(text: string) {
-    if (this.ended || !this.callId || !text.trim()) return;
+    if (this.ended || !this.callId || !text.trim() || this.keyDeadline) return;
     this.prompted = false;
-    const res = await callTurn(this.callId, text);
+    const turn = ++this.turnSeq;
+    // The AI brain hands over each sentence as soon as it is written: speak it right away.
+    let speaking: Promise<void> = Promise.resolve();
+    const res = await callTurn(this.callId, text, {
+      onSay: (sentence, lang) => {
+        speaking = speaking.then(() => (this.interruptedTurn === turn ? undefined : this.say([sentence], lang)));
+      },
+    });
+    await speaking;
     this.lang = res.state.lang;
-    await this.say(res.say, res.state.lang);
-    if (res.end) {
+    if (!res.spoken && this.interruptedTurn !== turn) await this.say(res.say, res.state.lang);
+    await this.afterReply(res);
+  }
+
+  /** After the agent's reply: hand over to a person, offer the keypad menu, or end. */
+  private async afterReply(res: { end: boolean; state: { outcome?: Outcome; lang: CallLang }; transfer?: { team: Team; number: string } }) {
+    if (res.transfer) {
+      this.handOver = res.transfer;
       this.endAfterSpeech = true;
       if (!this.speaking) this.hangup();
+      return;
     }
+    if (!res.end) return;
+    const outcome = res.state.outcome;
+    if (this.menu.length && !this.menuOffered && !(outcome && NO_MENU.includes(outcome))) {
+      this.menuOffered = true;
+      await this.say([menuLine(this.menu, res.state.lang)], res.state.lang);
+      this.keyDeadline = Date.now() + 8000; // wait for a key, then hang up
+      return;
+    }
+    this.endAfterSpeech = true;
+    if (!this.speaking) this.hangup();
+  }
+
+  /** Keypad: 1 Sales, 2 Sales Head, 3 Customer care. */
+  private async onKey(digit: string) {
+    if (this.ended || !this.callId || this.handOver) return;
+    const res = await pressKey(this.callId, digit);
+    if (!res) return;
+    this.deps.log(`call ${this.callId}: caller pressed ${digit}`);
+    this.keyDeadline = 0;
+    if (this.speaking) {
+      this.send({ event: "clear", streamSid: this.streamSid });
+      this.pendingMarks.clear();
+    }
+    this.interruptedTurn = this.turnSeq;
+    await this.say(res.say, res.state.lang);
+    if (res.transfer) this.handOver = res.transfer;
+    this.endAfterSpeech = true;
+    if (!this.speaking) this.hangup();
   }
 
   // ------------------------------------------------------------ speaking
@@ -239,7 +338,27 @@ export class CallSession {
   }
 
   private watchSilence() {
-    if (this.ended || !this.callId || this.speaking || this.inSpeech || this.endAfterSpeech) return;
+    if (this.ended || !this.callId) return;
+    // Keypad menu offered and no key pressed: end the call.
+    if (this.keyDeadline && !this.speaking && Date.now() > this.keyDeadline) {
+      this.keyDeadline = 0;
+      this.hangup();
+      return;
+    }
+    // Hard time limit (the AI is already asked to wrap up before the target length).
+    if (this.maxCallSeconds && !this.timeUp && !this.endAfterSpeech && !this.keyDeadline && !this.speaking && !this.inSpeech &&
+        Date.now() - this.answeredAt > (this.maxCallSeconds + 45) * 1000) {
+      this.timeUp = true;
+      this.endAfterSpeech = true;
+      const id = this.callId;
+      this.enqueue(async () => {
+        await this.say([TIME_UP[this.lang]], this.lang);
+        await endCall(id, "Time limit reached");
+        if (!this.speaking) this.hangup();
+      });
+      return;
+    }
+    if (this.speaking || this.inSpeech || this.endAfterSpeech || this.keyDeadline) return;
     if (Date.now() - this.lastActivity < config.silenceTimeoutSec * 1000) return;
     this.lastActivity = Date.now();
     if (!this.prompted) {
@@ -257,11 +376,21 @@ export class CallSession {
   // ------------------------------------------------------------ ending
 
   private hangup() {
-    if (this.ended) return;
+    if (this.ended || this.closing) return;
+    this.closing = true;
     // Give the last audio a moment, then end the call.
-    setTimeout(() => {
-      if (this.providerCallId && this.deps.line?.hangup) void this.deps.line.hangup(this.providerCallId);
+    setTimeout(async () => {
+      if (this.providerCallId && this.deps.line?.hangup) await this.deps.line.hangup(this.providerCallId).catch(() => undefined);
       this.ws.close(1000, "done");
+      const h = this.handOver;
+      if (h && this.customer && this.callId && this.deps.line?.bridge) {
+        // The customer's line is free now: ring the team member, then the customer.
+        setTimeout(() => {
+          this.deps.line!.bridge!({ agentNumber: h.number, customerNumber: this.customer, callId: this.callId! })
+            .then(() => this.deps.log(`call ${this.callId}: handed over to ${h.team}`))
+            .catch((e) => this.deps.log(`call ${this.callId}: hand-over failed (${e instanceof Error ? e.message : e}) — escalation is on the board`));
+        }, 1500);
+      }
     }, 400);
   }
 

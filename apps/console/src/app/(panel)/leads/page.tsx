@@ -10,6 +10,7 @@ import { voiceServerConfigured } from "@/lib/voice-server";
 import { ActionForm } from "../ActionForm";
 import { addLead, callNow, importLeads, updateLead } from "../actions";
 import { Avatar, Badge, Card, CardHeader, Empty, LEAD_STATUS, LeadBadge, PageTitle, SEGMENT_LABEL } from "../ui";
+import { AutoRefresh } from "../AutoRefresh";
 
 export const metadata: Metadata = { title: "Leads" };
 
@@ -33,6 +34,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
 
   return (
     <>
+      <AutoRefresh />
       <PageTitle title="Leads" sub="People the agent calls or who called in. Only numbers with consent are called by the auto-dialer." />
 
       {canEdit && (

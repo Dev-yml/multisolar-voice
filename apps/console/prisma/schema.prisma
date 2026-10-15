@@ -311,6 +311,18 @@ model AgentSettings {
   maxAttempts     Int     @default(3)
   retryGapMinutes Int     @default(240)
   maxConcurrent   Int     @default(3)
+  /// "claude" = AI conversation (needs ANTHROPIC_API_KEY), "rules" = built-in engine.
+  brain           String  @default("claude") @db.VarChar(10)
+  claudeModel     String  @default("claude-opus-5-5") @db.VarChar(40)
+  /// Sarvam text-to-speech model and voice (speaker). Empty speaker = a default voice for the chosen gender.
+  ttsModel        String  @default("bulbul:v3") @db.VarChar(30)
+  ttsSpeaker      String? @db.VarChar(60)
+  /// Keypad hand-over numbers: 1 = Sales (transferNumber), 2 = Sales Head, 3 = Customer care (CRM).
+  salesHeadNumber String? @db.VarChar(20)
+  crmNumber       String? @db.VarChar(20)
+  keypadMenu      Boolean @default(true)
+  /// Target length of an AI call; the agent wraps up before this and hangs up 45 s after it.
+  maxCallSeconds  Int     @default(210)
 }
 
 model AuditLog {

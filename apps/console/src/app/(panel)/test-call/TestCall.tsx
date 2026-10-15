@@ -11,7 +11,17 @@ type Line =
   | { kind: "customer"; text: string }
   | { kind: "tool"; text: string; detail?: string }
   | { kind: "note"; text: string };
-type Reply = { callId: number; say: string[]; end: boolean; state: { lang: string; stage: string; outcome?: string; slots: Record<string, unknown> }; events: Event[]; message?: string };
+type Reply = {
+  callId: number; say: string[]; end: boolean; events: Event[]; message?: string;
+  state: { lang: string; stage: string; outcome?: string; slots: Record<string, unknown>; brain?: string };
+  menu?: string[]; transfer?: { team: string; last4: string };
+};
+const TEAM_KEY: Record<string, { digit: string; label: string }> = {
+  SALES: { digit: "1", label: "Sales" },
+  SALES_HEAD: { digit: "2", label: "Sales Head" },
+  CRM: { digit: "3", label: "Customer care" },
+};
+const NO_MENU = ["DNC", "WRONG_NUMBER", "NOT_INTERESTED"];
 
 const QUICK = {
   OUTBOUND: ["Haan ji, boliye", "ghar ke liye", "teen-saade teen hazaar", "Gurgaon", "haan, kal shaam", "Battery backup bhi milega kya?", "nahi bas, dhanyavaad"],
@@ -72,6 +82,8 @@ export function TestCall({ agentName, sarvamVoice }: { agentName: string; sarvam
   const [state, setState] = useState<Reply["state"] | null>(null);
   const [ended, setEnded] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [menu, setMenu] = useState<string[]>([]);
+  const [keyOpen, setKeyOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [speak, setSpeak] = useState(true);
@@ -182,7 +194,16 @@ export function TestCall({ agentName, sarvamVoice }: { agentName: string; sarvam
       if (l) add.push(l);
     }
     for (const s of r.say) add.push({ kind: "agent", text: s, lang: r.state.lang });
-    if (r.end) add.push({ kind: "note", text: "Call ended by the agent." });
+    if (r.menu) setMenu(r.menu);
+    const offerKeys = r.end && !r.transfer && (r.menu?.length ?? 0) > 0 && !NO_MENU.includes(r.state.outcome ?? "");
+    if (r.transfer) {
+      const t = TEAM_KEY[r.transfer.team]?.label ?? r.transfer.team;
+      add.push({ kind: "tool", text: `Hand-over to ${t}`, detail: `On a phone call the ${t} line (…${r.transfer.last4}) rings first, then the customer.` });
+      add.push({ kind: "note", text: `On a real call: ${t} (…${r.transfer.last4}) is rung first, then the customer.` });
+    }
+    if (offerKeys) add.push({ kind: "note", text: `Keypad menu: ${r.menu!.map((m) => `${TEAM_KEY[m]?.digit} ${TEAM_KEY[m]?.label}`).join(" · ")} — press below (8 seconds on a phone).` });
+    else if (r.end) add.push({ kind: "note", text: "Call ended by the agent." });
+    setKeyOpen(offerKeys);
     setLines((prev) => [...prev, ...add]);
     setState(r.state);
     setEnded(r.end);
@@ -211,6 +232,7 @@ export function TestCall({ agentName, sarvamVoice }: { agentName: string; sarvam
   async function start() {
     setLines([]);
     setEnded(false);
+    setKeyOpen(false);
     const r = await post("/api/test-call/start", { direction, name: name || undefined, phone: phone || undefined, language });
     if (!r) return;
     setCallId(r.callId);
@@ -226,6 +248,14 @@ export function TestCall({ agentName, sarvamVoice }: { agentName: string; sarvam
     const r = await post("/api/test-call/turn", { callId, text: t });
     if (r) apply(r, t);
     inputRef.current?.focus();
+  }
+
+  async function press(digit: string) {
+    if (!callId || busy) return;
+    stopSpeaking();
+    const r = await post("/api/test-call/key", { callId, digit });
+    setKeyOpen(false);
+    if (r) apply(r, `Pressed ${digit}`);
   }
 
   async function hangUp() {
@@ -345,7 +375,7 @@ export function TestCall({ agentName, sarvamVoice }: { agentName: string; sarvam
             </span>
             <div>
               <p className="text-sm font-semibold">{agentName}</p>
-              <p className="text-xs text-white/60">AI assistant · English / Hindi</p>
+              <p className="text-xs text-white/60">{state?.brain === "claude" ? "Claude AI" : "Rule engine"} · English / Hindi</p>
             </div>
           </div>
           <span className={cn("rounded-full px-3 py-1 text-xs font-semibold ring-1", live ? "bg-emerald-400/15 text-emerald-200 ring-emerald-300/30" : "bg-white/10 text-white/70 ring-white/15")}>
@@ -383,6 +413,17 @@ export function TestCall({ agentName, sarvamVoice }: { agentName: string; sarvam
           <div ref={endRef} />
         </div>
 
+        {(live || keyOpen) && menu.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 border-t border-white/70 bg-white/40 px-3 py-2 sm:px-4">
+            <span className="text-xs font-semibold text-muted">Keypad</span>
+            {menu.map((m) => (
+              <button key={m} type="button" onClick={() => press(TEAM_KEY[m].digit)} disabled={busy}
+                className="btn btn-ghost btn-sm rounded-xl" aria-label={`Press ${TEAM_KEY[m].digit} for ${TEAM_KEY[m].label}`}>
+                <b className="digits">{TEAM_KEY[m].digit}</b> {TEAM_KEY[m].label}
+              </button>
+            ))}
+          </div>
+        )}
         {live && (
           <div className="border-t border-white/70 bg-white/30 p-3 sm:p-4">
             <div className="mb-3 flex gap-2 overflow-x-auto pb-1">

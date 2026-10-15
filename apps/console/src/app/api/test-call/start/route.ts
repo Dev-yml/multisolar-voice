@@ -4,7 +4,10 @@ import { getUser } from "@/lib/auth/guard";
 import { startCall } from "@/lib/calls";
 import { prisma } from "@/lib/db";
 import { normalizePhone } from "@/lib/util";
-import { testCallLimit } from "@/lib/test-calls";
+import { forBrowser, testCallLimit } from "@/lib/test-calls";
+
+/** The AI may take a few seconds (and look things up); allow up to a minute on Vercel. */
+export const maxDuration = 60;
 
 const Body = z.object({
   direction: z.enum(["INBOUND", "OUTBOUND"]),
@@ -45,5 +48,5 @@ export async function POST(req: Request) {
     startLanguage: language,
     customerName: name,
   });
-  return NextResponse.json(res);
+  return NextResponse.json(forBrowser(res));
 }

@@ -9,6 +9,7 @@ import { voiceServerConfigured, voiceStatus } from "@/lib/voice-server";
 import { prisma } from "@/lib/db";
 import { cn, istDay, timeAgo } from "@/lib/util";
 import { LineChart } from "./charts";
+import { AutoRefresh } from "./AutoRefresh";
 import { RangeSelect } from "./RangeSelect";
 import { Card, Empty, OUTCOME, Stat, type Trend } from "./ui";
 
@@ -106,6 +107,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
 
   return (
     <>
+      <AutoRefresh seconds={30} />
       {sp.denied && <p role="alert" className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 ring-1 ring-rose-600/15">Your role cannot open that page.</p>}
 
       {/* Hero with the solar field */}

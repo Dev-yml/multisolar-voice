@@ -56,6 +56,10 @@ export function buildTools(ctx: { callId: number; leadId: number | null; phone?:
     },
     async scheduleCallback({ dateISO, slot, label }) {
       await prisma.callback.create({ data: { leadId: ctx.leadId, callId: ctx.callId, date: new Date(`${dateISO}T00:00:00Z`), slot, label } });
+      // Also on the Escalations board, so the team sees who asked to be called back and when.
+      await prisma.escalation.create({
+        data: { callId: ctx.callId, leadId: ctx.leadId, reason: "CALLBACK", question: `Customer asked to be called back: ${label}. The dialer calls them again then.`, dueAt: callbackTime(dateISO, slot) },
+      });
       // The dialer calls back at the start of that slot (IST) — a callback starts a fresh set of attempts.
       if (ctx.leadId) await prisma.lead.update({ where: { id: ctx.leadId }, data: { nextCallAt: callbackTime(dateISO, slot), attempts: 0 } });
     },

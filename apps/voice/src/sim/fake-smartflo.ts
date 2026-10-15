@@ -15,6 +15,10 @@ export class SimulatedLine implements PhoneLine {
 
   constructor(private opts: { log: (m: string) => void }) {}
 
+  async bridge({ agentNumber, callId }: { agentNumber: string; customerNumber: string; callId: number }) {
+    this.opts.log(`sim: call ${callId} handed over — would ring the team on …${agentNumber.slice(-4)}, then the customer`);
+  }
+
   async dial({ callId, phone }: DialRequest) {
     const refId = `SIM-${callId}`;
     const persona = personaByPhone(phone);

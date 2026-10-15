@@ -28,6 +28,10 @@ export const config = {
     apiToken: smartfloToken,
     c2cKey: env("SMARTFLO_C2C_API_KEY"),
     callerId: env("SMARTFLO_CALLER_ID"),
+    /** Several company numbers (comma-separated): outbound calls take turns using them as caller ID. */
+    callerIds: (env("SMARTFLO_CALLER_IDS") ?? env("SMARTFLO_CALLER_ID") ?? "").split(",").map((n) => n.replace(/\D/g, "")).filter((n) => n.length >= 10),
+    /** Click-to-Call (agent first, then customer) — used to connect a caller to Sales / Sales Head / CRM. */
+    bridgePath: env("SMARTFLO_BRIDGE_PATH") ?? "/v1/click_to_call",
   },
   dialer: {
     enabled: env("DIALER") !== "off",

@@ -19,4 +19,6 @@ RUN npm run generate --workspace @msv/data
 
 EXPOSE 8080
 ENV PORT=8080
+# Run without root rights (the image's built-in "node" user).
+USER node
 CMD ["npm", "run", "start", "--workspace", "@msv/voice"]

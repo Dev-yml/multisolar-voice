@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getUser } from "@/lib/auth/guard";
+import { getSettings, ttsVoice } from "@/lib/calls";
 import { hit } from "@/lib/rate-limit";
 
 /**
@@ -23,15 +24,17 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ message: "Invalid request" }, { status: 400 });
 
   const { text, lang } = parsed.data;
-  const ck = `${lang}|${text}`;
+  // Same voice as phone calls (Agent settings), at higher quality — the browser is not a phone line.
+  const voice = ttsVoice(await getSettings());
+  const model = process.env.SARVAM_TTS_MODEL || voice.model;
+  const speaker = process.env.SARVAM_TTS_SPEAKER || voice.speaker;
+  const code = lang === "hi" ? "hi-IN" : "en-IN";
+  const body: Record<string, unknown> = { text, language_code: code, target_language_code: code, speech_sample_rate: 24000, model };
+  if (speaker) body.speaker = speaker;
+  if (process.env.SARVAM_TTS_PACE) body.pace = Number(process.env.SARVAM_TTS_PACE);
+  const ck = `${model}|${speaker}|${lang}|${text}`;
   const cached = cache.get(ck);
   if (cached) return NextResponse.json({ audios: cached });
-
-  const code = lang === "hi" ? "hi-IN" : "en-IN";
-  const body: Record<string, unknown> = { text, language_code: code, target_language_code: code, speech_sample_rate: 24000 };
-  if (process.env.SARVAM_TTS_MODEL) body.model = process.env.SARVAM_TTS_MODEL;
-  if (process.env.SARVAM_TTS_SPEAKER) body.speaker = process.env.SARVAM_TTS_SPEAKER;
-  if (process.env.SARVAM_TTS_PACE) body.pace = Number(process.env.SARVAM_TTS_PACE);
 
   try {
     const res = await fetch("https://api.sarvam.ai/text-to-speech", {

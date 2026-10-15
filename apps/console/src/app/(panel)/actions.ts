@@ -8,6 +8,7 @@ import { requireUser } from "@/lib/auth/guard";
 import { hashPassword, passwordProblem, verifyPassword } from "@/lib/auth/password";
 import { SESSION_COOKIE, sessionCookieOptions, signSession } from "@/lib/auth/session";
 import { decryptSecret, hashRecovery, newRecoveryCodes, verifyCode } from "@/lib/auth/totp";
+import { CLAUDE_MODELS, TTS_MODELS } from "@/lib/calls";
 import { prisma } from "@/lib/db";
 import { ingestFile, ingestText, invalidateKnowledge } from "@/lib/knowledge";
 import { ADMINS, MANAGERS, ROLES, SALES } from "@/lib/roles";
@@ -256,6 +257,14 @@ export async function saveSettings(_p: ActionState, fd: FormData): Promise<Actio
     callingEnd: str(fd, "callingEnd"),
     escalationHours: Math.round(num(fd, "escalationHours")),
     transferNumber: normalizePhone(str(fd, "transferNumber")) ?? null,
+    salesHeadNumber: normalizePhone(str(fd, "salesHeadNumber")) ?? null,
+    crmNumber: normalizePhone(str(fd, "crmNumber")) ?? null,
+    keypadMenu: fd.get("keypadMenu") === "on",
+    maxCallSeconds: Math.round(num(fd, "maxCallSeconds")),
+    brain: str(fd, "brain") === "rules" ? "rules" : "claude",
+    claudeModel: CLAUDE_MODELS.some((m) => m.id === str(fd, "claudeModel")) ? str(fd, "claudeModel") : "claude-opus-5-5",
+    ttsModel: TTS_MODELS.some((m) => m.id === str(fd, "ttsModel")) ? str(fd, "ttsModel") : "bulbul:v3",
+    ttsSpeaker: /^[a-z0-9_-]{2,60}$/i.test(str(fd, "ttsSpeaker")) ? str(fd, "ttsSpeaker").toLowerCase() : null,
     monthlyBudget: Math.round(num(fd, "monthlyBudget")),
     outboundEnabled: fd.get("outboundEnabled") === "on",
     maxAttempts: Math.round(num(fd, "maxAttempts")),
@@ -266,6 +275,9 @@ export async function saveSettings(_p: ActionState, fd: FormData): Promise<Actio
   if (data.callingStart < "09:00" || data.callingEnd > "21:00") return fail("Telemarketing calls are allowed only between 09:00 and 21:00.");
   if (!(data.escalationHours >= 1 && data.escalationHours <= 168)) return fail("Callback promise must be 1–168 hours.");
   if (!(data.maxAttempts >= 1 && data.maxAttempts <= 5) || !(data.maxConcurrent >= 1 && data.maxConcurrent <= 50)) return fail("Check attempts (1–5) and concurrent calls (1–50).");
+  if (!(data.maxCallSeconds >= 60 && data.maxCallSeconds <= 600)) return fail("Target call length must be 60–600 seconds.");
+  for (const [field, label] of [["transferNumber", "Sales"], ["salesHeadNumber", "Sales Head"], ["crmNumber", "Customer care"]] as const)
+    if (str(fd, field) && !data[field]) return fail(`${label} number: enter a valid 10-digit Indian mobile number.`);
   await prisma.agentSettings.upsert({ where: { id: 1 }, update: data, create: { id: 1, ...data } });
   await audit(user.id, "settings.save", "AgentSettings", 1, data);
   revalidatePath("/settings");

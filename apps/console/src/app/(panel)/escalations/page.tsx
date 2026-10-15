@@ -7,12 +7,14 @@ import { dueIn, formatDateTime } from "@/lib/util";
 import { ActionForm } from "../ActionForm";
 import { updateEscalation } from "../actions";
 import { Badge, Card, Empty, PageTitle } from "../ui";
+import { AutoRefresh } from "../AutoRefresh";
 
 export const metadata: Metadata = { title: "Escalations" };
 
 const REASON: Record<string, string> = {
   NOT_IN_KNOWLEDGE: "Agent didn't know", HUMAN_REQUESTED: "Asked for a person", NOT_UNDERSTOOD: "Agent couldn't understand",
   OUT_OF_SCOPE: "Outside agent's scope", NEGOTIATION: "Price negotiation", UPSET: "Customer upset",
+  CALLBACK: "Callback requested", TRANSFER: "Connected to the team",
 };
 
 export default async function EscalationsPage({ searchParams }: { searchParams: Promise<{ show?: string }> }) {
@@ -31,6 +33,7 @@ export default async function EscalationsPage({ searchParams }: { searchParams: 
 
   return (
     <>
+      <AutoRefresh />
       <PageTitle title="Escalations" sub="Questions the agent handed to sales. The customer was promised a call back — the clock shows how long is left.">
         <div className="flex gap-2 text-sm">
           <Link href="/escalations" className={show === "resolved" ? "btn btn-ghost" : "btn"}>Open</Link>

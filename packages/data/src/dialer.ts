@@ -58,13 +58,14 @@ export async function dueLeads(limit: number, now = new Date(), opts: { retryGap
     OR: [
       // A callback the customer asked for.
       { nextCallAt: { lte: now } },
-      // Retries only while the customer has never picked up — once they have talked to the agent,
-      // the agent never calls again on its own (only for a booked callback).
+      // Retries only while the customer has never really talked (no answer, busy, or picked up and hung up
+      // without a word — those calls end as NO_ANSWER). Once they have talked to the agent, it never calls
+      // again on its own (only for a booked callback).
       {
         nextCallAt: null,
         attempts: { lt: s.maxAttempts },
         OR: [{ lastAttemptAt: null }, { lastAttemptAt: { lte: gapAgo } }],
-        NOT: { calls: { some: { answeredAt: { not: null } } } },
+        NOT: { calls: { some: { answeredAt: { not: null }, OR: [{ outcome: null }, { outcome: { not: "NO_ANSWER" } }] } } },
       },
     ],
   };

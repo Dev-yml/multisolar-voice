@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 import { duration, formatDateTime } from "@/lib/util";
 import { PhoneIncoming, PhoneOutgoing, Search } from "lucide-react";
 import { Avatar, Badge, Card, Empty, OUTCOME, OutcomeBadge, PageTitle } from "../ui";
+import { AutoRefresh } from "../AutoRefresh";
 
 export const metadata: Metadata = { title: "Calls" };
 
@@ -30,6 +31,7 @@ export default async function CallsPage({ searchParams }: { searchParams: Promis
 
   return (
     <>
+      <AutoRefresh />
       <PageTitle title="Calls" sub="Every call with its transcript, recording, summary and outcome." />
       <form className="glass mb-5 flex flex-wrap items-center gap-2 rounded-2xl p-3">
         <div className="relative w-full sm:w-72">
